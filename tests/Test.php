@@ -60,7 +60,7 @@ class Tests extends \PHPUnit_Framework_TestCase
     {
         $spec = $this->overDue
             ->andX($this->noticeNotSent)
-            ->not(new NotSpecification($this->inCollection));
+            ->not();
         $this->assertCount(2, $this->usingSpec($spec));
     }
 
