@@ -2,16 +2,12 @@
 
 namespace Mbrevda\SpecificationPattern;
 
-use \Mbrevda\SpecificationPattern\SpecificationInterface;
-use \Mbrevda\SpecificationPattern\CompositeSpecification;
-
-class NotSpecification extends CompositeSpecification
+class NotSpecification implements SpecificationInterface
 {
     private $specification;
 
-    public function __construct(
-        SpecificationInterface $specification
-    ) {
+    public function __construct(SpecificationInterface $specification)
+    {
         $this->specification = $specification;
     }
 

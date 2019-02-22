@@ -2,10 +2,7 @@
 
 namespace Mbrevda\SpecificationPattern;
 
-use \Mbrevda\SpecificationPattern\SpecificationInterface;
-use \Mbrevda\SpecificationPattern\CompositeSpecification;
-
-class OrSpecification extends CompositeSpecification
+class OrSpecification implements SpecificationInterface
 {
     private $one;
     private $other;
