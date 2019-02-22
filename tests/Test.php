@@ -11,6 +11,11 @@ use Mbrevda\SpecificationPattern\Tests\Mocks\InCollectionSpecification;
 
 class Tests extends \PHPUnit_Framework_TestCase
 {
+    private $invoices;
+    private $overDue;
+    private $noticeNotSent;
+    private $inCollection;
+
     public function setUp()
     {
         $this->invoices       = json_decode(file_get_contents(__DIR__ . '/db.json'));
