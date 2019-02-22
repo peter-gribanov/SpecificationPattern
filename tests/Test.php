@@ -2,7 +2,9 @@
 
 namespace Mbrevda\SpecificationPattern\Tests;
 
+use Mbrevda\SpecificationPattern\AndSpecification;
 use Mbrevda\SpecificationPattern\NotSpecification;
+use Mbrevda\SpecificationPattern\OrSpecification;
 use Mbrevda\SpecificationPattern\Tests\Mocks\OverDueSpecification;
 use Mbrevda\SpecificationPattern\Tests\Mocks\NoticeNotSentSpecification;
 use Mbrevda\SpecificationPattern\Tests\Mocks\InCollectionSpecification;
@@ -52,30 +54,25 @@ class Tests extends \PHPUnit_Framework_TestCase
 
     public function testAndX()
     {
-        $spec = $this->overDue->andX($this->noticeNotSent);
+        $spec = new AndSpecification($this->overDue, $this->noticeNotSent);
         $this->assertCount(2, $this->usingSpec($spec));
     }
 
     public function testAndXandNot()
     {
-        $spec = $this->overDue
-            ->andX($this->noticeNotSent)
-            ->not(new NotSpecification($this->inCollection));
+        $spec = new NotSpecification(new AndSpecification($this->overDue, $this->noticeNotSent));
         $this->assertCount(2, $this->usingSpec($spec));
     }
 
     public function testAndandNot()
     {
-        $spec = $this->overDue
-            ->andX($this->noticeNotSent)
-            ->not(new NotSpecification($this->inCollection));
+        $spec = new NotSpecification(new AndSpecification($this->overDue, $this->noticeNotSent));
         $this->assertCount(2, $this->usingSpec($spec));
     }
 
     public function testOr()
     {
-        $spec = $this->overDue
-            ->orX(new NotSpecification($this->overDue));
+        $spec = new OrSpecification($this->overDue, new NotSpecification($this->overDue));
 
         $this->assertCount(4, $this->usingSpec($spec));
     }

@@ -2,9 +2,9 @@
 
 namespace Mbrevda\SpecificationPattern\Tests\Mocks;
 
-use \Mbrevda\SpecificationPattern\CompositeSpecification;
+use \Mbrevda\SpecificationPattern\SpecificationInterface;
 
-class OverDueSpecification extends CompositeSpecification
+class OverDueSpecification implements SpecificationInterface
 {
     private $date;
 

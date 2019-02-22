@@ -2,11 +2,10 @@
 
 namespace Mbrevda\SpecificationPattern\Tests\Mocks;
 
-use \Mbrevda\SpecificationPattern\CompositeSpecification;
+use \Mbrevda\SpecificationPattern\SpecificationInterface;
 
-class NoticeNotSentSpecification extends CompositeSpecification
+class NoticeNotSentSpecification implements SpecificationInterface
 {
-
     public function isSatisfiedBy($candidate)
     {
         return $candidate->hasSentNotice == false;
