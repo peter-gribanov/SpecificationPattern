@@ -2,11 +2,6 @@
 
 namespace Mbrevda\SpecificationPattern;
 
-use \Mbrevda\SpecificationPattern\SpecificationInterface;
-use \Mbrevda\SpecificationPattern\AndSpecification;
-use \Mbrevda\SpecificationPattern\OrSpecification;
-use \Mbrevda\SpecificationPattern\NotSpecification;
-
 abstract class CompositeSpecification implements SpecificationInterface
 {
     public abstract function isSatisfiedBy($candidate);

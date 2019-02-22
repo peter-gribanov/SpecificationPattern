@@ -2,25 +2,32 @@
 
 namespace Mbrevda\SpecificationPattern;
 
-use \Mbrevda\SpecificationPattern\SpecificationInterface;
-use \Mbrevda\SpecificationPattern\CompositeSpecification;
-
 class OrSpecification extends CompositeSpecification
 {
-    private $one;
-    private $other;
+    private $specifications = [];
 
-    public function __construct(
-        SpecificationInterface $one,
-        SpecificationInterface $other
-    ) {
-        $this->one = $one;
-        $this->other = $other;
+    public function __construct(SpecificationInterface $first, SpecificationInterface $second)
+    {
+        foreach (func_get_args() as $specification) {
+            $this->orX($specification);
+        }
+    }
+
+    public function orX(SpecificationInterface $specification)
+    {
+        $this->specifications[] = $specification;
+
+        return $this;
     }
 
     public function isSatisfiedBy($candidate)
     {
-        return $this->one->isSatisfiedBy($candidate)
-            || $this->other->isSatisfiedBy($candidate);
+        foreach ($this->specifications as $specification) {
+            if ($specification->isSatisfiedBy($candidate)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
