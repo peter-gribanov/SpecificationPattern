@@ -18,6 +18,9 @@ $needsToBeRemitted = $overDue
     ->andX($noticeNotSent)
     ->andX(new NotSpecification($inCollection));
 
+// another way to declare a specifications tree
+// $needsToBeRemitted = new AndSpecification($overDue, $noticeNotSent, new NotSpecification($inCollection));
+
 $satisfying = array_filter($invoices, function($invoice) {
     return $needsToBeRemitted->isSatisfyableBy($invoice);
 })
