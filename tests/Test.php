@@ -77,17 +77,6 @@ class Tests extends \PHPUnit_Framework_TestCase
         self::assertCount(2, $this->usingSpec($spec2));
     }
 
-    public function testAndandNot()
-    {
-        $spec1 = $this->overDue->andX($this->noticeNotSent)->not();
-        $spec2 = new NotSpecification(
-            new AndSpecification($this->overDue, $this->noticeNotSent)
-        );
-
-        self::assertCount(2, $this->usingSpec($spec1));
-        self::assertCount(2, $this->usingSpec($spec2));
-    }
-
     public function testOr()
     {
         $spec1 = $this->overDue->orX(new NotSpecification($this->overDue));
