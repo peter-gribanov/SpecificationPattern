@@ -2,13 +2,20 @@
 
 namespace Mbrevda\SpecificationPattern\Tests;
 
+use Mbrevda\SpecificationPattern\AndSpecification;
 use Mbrevda\SpecificationPattern\NotSpecification;
+use Mbrevda\SpecificationPattern\OrSpecification;
 use Mbrevda\SpecificationPattern\Tests\Mocks\OverDueSpecification;
 use Mbrevda\SpecificationPattern\Tests\Mocks\NoticeNotSentSpecification;
 use Mbrevda\SpecificationPattern\Tests\Mocks\InCollectionSpecification;
 
 class Tests extends \PHPUnit_Framework_TestCase
 {
+    private $invoices;
+    private $overDue;
+    private $noticeNotSent;
+    private $inCollection;
+
     public function setUp()
     {
         $this->invoices       = json_decode(file_get_contents(__DIR__ . '/db.json'));
@@ -30,53 +37,63 @@ class Tests extends \PHPUnit_Framework_TestCase
     }
 
     public function testOverDueSpecification(){
-        $this->assertFalse($this->overDue->isSatisfiedBy($this->invoices[0]));
-        $this->assertTrue($this->overDue->isSatisfiedBy($this->invoices[1]));
-        $this->assertTrue($this->overDue->isSatisfiedBy($this->invoices[2]));
-        $this->assertTrue($this->overDue->isSatisfiedBy($this->invoices[3]));
+        self::assertFalse($this->overDue->isSatisfiedBy($this->invoices[0]));
+        self::assertTrue($this->overDue->isSatisfiedBy($this->invoices[1]));
+        self::assertTrue($this->overDue->isSatisfiedBy($this->invoices[2]));
+        self::assertTrue($this->overDue->isSatisfiedBy($this->invoices[3]));
     }
 
     public function testNoticeSentSpecification(){
-        $this->assertTrue($this->noticeNotSent->isSatisfiedBy($this->invoices[0]));
-        $this->assertTrue($this->noticeNotSent->isSatisfiedBy($this->invoices[1]));
-        $this->assertFalse($this->noticeNotSent->isSatisfiedBy($this->invoices[2]));
-        $this->assertTrue($this->noticeNotSent->isSatisfiedBy($this->invoices[3]));
+        self::assertTrue($this->noticeNotSent->isSatisfiedBy($this->invoices[0]));
+        self::assertTrue($this->noticeNotSent->isSatisfiedBy($this->invoices[1]));
+        self::assertFalse($this->noticeNotSent->isSatisfiedBy($this->invoices[2]));
+        self::assertTrue($this->noticeNotSent->isSatisfiedBy($this->invoices[3]));
     }
 
     public function testInCollectionSpecification(){
-        $this->assertFalse($this->inCollection->isSatisfiedBy($this->invoices[0]));
-        $this->assertTrue($this->inCollection->isSatisfiedBy($this->invoices[1]));
-        $this->assertFalse($this->inCollection->isSatisfiedBy($this->invoices[2]));
-        $this->assertFalse($this->inCollection->isSatisfiedBy($this->invoices[3]));
+        self::assertFalse($this->inCollection->isSatisfiedBy($this->invoices[0]));
+        self::assertTrue($this->inCollection->isSatisfiedBy($this->invoices[1]));
+        self::assertFalse($this->inCollection->isSatisfiedBy($this->invoices[2]));
+        self::assertFalse($this->inCollection->isSatisfiedBy($this->invoices[3]));
     }
 
     public function testAndX()
     {
-        $spec = $this->overDue->andX($this->noticeNotSent);
-        $this->assertCount(2, $this->usingSpec($spec));
+        $spec1 = $this->overDue->andX($this->noticeNotSent);
+        $spec2 = new AndSpecification($this->overDue, $this->noticeNotSent);
+
+        self::assertCount(2, $this->usingSpec($spec1));
+        self::assertCount(2, $this->usingSpec($spec2));
     }
 
     public function testAndXandNot()
     {
-        $spec = $this->overDue
-            ->andX($this->noticeNotSent)
-            ->not(new NotSpecification($this->inCollection));
-        $this->assertCount(2, $this->usingSpec($spec));
+        $spec1 = $this->overDue->andX($this->noticeNotSent)->not();
+        $spec2 = new NotSpecification(
+            new AndSpecification($this->overDue, $this->noticeNotSent)
+        );
+
+        self::assertCount(2, $this->usingSpec($spec1));
+        self::assertCount(2, $this->usingSpec($spec2));
     }
 
     public function testAndandNot()
     {
-        $spec = $this->overDue
-            ->andX($this->noticeNotSent)
-            ->not(new NotSpecification($this->inCollection));
-        $this->assertCount(2, $this->usingSpec($spec));
+        $spec1 = $this->overDue->andX($this->noticeNotSent)->not();
+        $spec2 = new NotSpecification(
+            new AndSpecification($this->overDue, $this->noticeNotSent)
+        );
+
+        self::assertCount(2, $this->usingSpec($spec1));
+        self::assertCount(2, $this->usingSpec($spec2));
     }
 
     public function testOr()
     {
-        $spec = $this->overDue
-            ->orX(new NotSpecification($this->overDue));
+        $spec1 = $this->overDue->orX(new NotSpecification($this->overDue));
+        $spec2 = new OrSpecification($this->overDue, new NotSpecification($this->overDue));
 
-        $this->assertCount(4, $this->usingSpec($spec));
+        self::assertCount(4, $this->usingSpec($spec1));
+        self::assertCount(4, $this->usingSpec($spec2));
     }
 }
