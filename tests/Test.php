@@ -66,6 +66,15 @@ class Tests extends \PHPUnit_Framework_TestCase
         self::assertCount(2, $this->usingSpec($spec2));
     }
 
+    public function testAndXMany()
+    {
+        $spec1 = $this->overDue->andX($this->noticeNotSent)->andX($this->inCollection);
+        $spec2 = new AndSpecification($this->overDue, $this->noticeNotSent, $this->inCollection);
+
+        self::assertCount(1, $this->usingSpec($spec1));
+        self::assertCount(1, $this->usingSpec($spec2));
+    }
+
     public function testAndXandNot()
     {
         $spec1 = $this->overDue->andX($this->noticeNotSent)->not();
@@ -77,12 +86,21 @@ class Tests extends \PHPUnit_Framework_TestCase
         self::assertCount(2, $this->usingSpec($spec2));
     }
 
-    public function testOr()
+    public function testOrX()
     {
         $spec1 = $this->overDue->orX(new NotSpecification($this->overDue));
         $spec2 = new OrSpecification($this->overDue, new NotSpecification($this->overDue));
 
         self::assertCount(4, $this->usingSpec($spec1));
         self::assertCount(4, $this->usingSpec($spec2));
+    }
+
+    public function testOrXMany()
+    {
+        $spec1 = $this->overDue->orX($this->overDue)->orX($this->inCollection);
+        $spec2 = new OrSpecification($this->overDue, $this->overDue, $this->inCollection);
+
+        self::assertCount(3, $this->usingSpec($spec1));
+        self::assertCount(3, $this->usingSpec($spec2));
     }
 }
